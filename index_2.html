@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dark Wolf Walkies">
+<title>Dark Wolf Walkies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: #EEF0E8;
+    --surface: #FFFFFF;
+    --ink: #202B23;
+    --ink-soft: #5B6A5F;
+    --ink-faint: #8A968B;
+    --primary: #2F5D4D;
+    --primary-dark: #1E3F34;
+    --accent: #C17A35;
+    --accent-soft: #EFD9BC;
+    --urgent: #B5432F;
+    --urgent-soft: #F3D9CF;
+    --border: #DCE0D5;
+    --radius: 14px;
+    --font-display: 'Zilla Slab', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body[data-theme="dark"]{
+    --bg: #161B24;
+    --surface: #1F2733;
+    --ink: #E8ECF2;
+    --ink-soft: #A6B0BF;
+    --ink-faint: #74808F;
+    --primary: #6E9FD8;
+    --primary-dark: #8FB6E3;
+    --accent: #E0A868;
+    --accent-soft: #3A3021;
+    --urgent: #E2836F;
+    --urgent-soft: #40241F;
+    --border: #2C3644;
+  }
+
+  body[data-theme="dark"]{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24'%3E%3Cg fill='%236E9FD8' fill-opacity='0.06'%3E%3Cellipse cx='12' cy='15.5' rx='5' ry='4.2'/%3E%3Cellipse cx='5.2' cy='9.5' rx='2.1' ry='2.6' transform='rotate(-20 5.2 9.5)'/%3E%3Cellipse cx='9.6' cy='5.8' rx='2' ry='2.5' transform='rotate(-8 9.6 5.8)'/%3E%3Cellipse cx='14.4' cy='5.8' rx='2' ry='2.5' transform='rotate(8 14.4 5.8)'/%3E%3Cellipse cx='18.8' cy='9.5' rx='2.1' ry='2.6' transform='rotate(20 18.8 9.5)'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24'%3E%3Cg fill='%232F5D4D' fill-opacity='0.05'%3E%3Cellipse cx='12' cy='15.5' rx='5' ry='4.2'/%3E%3Cellipse cx='5.2' cy='9.5' rx='2.1' ry='2.6' transform='rotate(-20 5.2 9.5)'/%3E%3Cellipse cx='9.6' cy='5.8' rx='2' ry='2.5' transform='rotate(-8 9.6 5.8)'/%3E%3Cellipse cx='14.4' cy='5.8' rx='2' ry='2.5' transform='rotate(8 14.4 5.8)'/%3E%3Cellipse cx='18.8' cy='9.5' rx='2.1' ry='2.6' transform='rotate(20 18.8 9.5)'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .2s ease, color .2s ease;
+  }
+
+  .app{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 20px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  .header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .brand-mark{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .brand-mark .brand-paw{
+    color: var(--primary);
+    flex-shrink:0;
+    margin-bottom: 4px;
+    display:flex;
+  }
+  h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 30px;
+    margin:0;
+    color: var(--primary-dark);
+    letter-spacing: -0.01em;
+  }
+  .subtitle{
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  .header-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+  }
+
+  button{
+    font-family: var(--font-body);
+    cursor:pointer;
+    border:none;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 10px 16px;
+    transition: transform .06s ease, box-shadow .15s ease, background .15s ease;
+  }
+  button:active{ transform: scale(0.97); }
+
+  .btn-primary{ background: var(--primary); color:#fff; }
+  .btn-primary:hover{ background: var(--primary-dark); }
+  .btn-secondary{ background: var(--surface); color: var(--primary-dark); border: 1.5px solid var(--border); }
+  .btn-secondary:hover{ border-color: var(--primary); }
+  .btn-ghost{ background: transparent; color: var(--ink-soft); padding: 8px 10px; }
+  .btn-ghost:hover{ color: var(--ink); background: rgba(0,0,0,0.04); }
+  .btn-danger-ghost{ background: transparent; color: var(--urgent); padding: 8px 10px; }
+  .btn-danger-ghost:hover{ background: var(--urgent-soft); }
+  .btn-small{ padding: 7px 12px; font-size: 12.5px; }
+
+  /* ---------- Empty state ---------- */
+  .empty-state{
+    background: var(--surface);
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 48px 24px;
+    text-align:center;
+    color: var(--ink-soft);
+  }
+  .empty-state .emoji{ font-size: 28px; margin-bottom: 10px; }
+  .empty-state h3{
+    font-family: var(--font-display);
+    color: var(--primary-dark);
+    margin: 0 0 6px;
+    font-size: 19px;
+  }
+  .empty-state p{ margin: 0 0 18px; font-size: 14px; }
+
+  /* ---------- Section labels ---------- */
+  .section-label{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 26px 0 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .section-label::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background: var(--border);
+  }
+
+  /* ---------- Job cards ---------- */
+  .job-list{ display:flex; flex-direction:column; gap:12px; }
+
+  .job-card{
+    position:relative;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 16px 16px 16px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    border-left: 5px solid var(--ink-faint);
+  }
+  .job-card.today{ border-left-color: var(--urgent); }
+  .job-card.soon{ border-left-color: var(--accent); }
+  .job-card.upcoming{ border-left-color: var(--primary); }
+  .job-card.past{ opacity: 0.55; }
+
+  .job-card .tag-hole{
+    position:absolute;
+    top:16px; right:16px;
+    width:9px; height:9px;
+    border-radius:50%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+  }
+
+  .job-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap: 10px;
+    padding-right: 20px;
+  }
+  .job-client{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .job-dates{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
+  .job-badge{
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .job-card.today .job-badge{ background: var(--urgent-soft); color: var(--urgent); }
+  .job-card.soon .job-badge{ background: var(--accent-soft); color: #7A4A18; }
+  .job-card.upcoming .job-badge{ background: #DCEAE3; color: var(--primary-dark); }
+  .job-card.past .job-badge{ background: var(--border); color: var(--ink-soft); }
+
+  .job-meta{
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .job-meta strong{ color: var(--ink); font-weight: 600; }
+
+  .pet-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top: 2px;
+  }
+  .pet-chip{
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 4px 10px 4px 7px;
+    border-radius: 999px;
+    color: var(--ink);
+  }
+  .pet-chip svg{ flex-shrink:0; }
+
+  .job-notes{
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 9px 11px;
+    white-space: pre-wrap;
+  }
+
+  .job-actions{
+    display:flex;
+    gap: 8px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+  }
+
+  /* ---------- Form ---------- */
+  .form-panel{
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 22px;
+  }
+  .form-panel h2{
+    font-family: var(--font-display);
+    font-size: 20px;
+    margin: 0 0 18px;
+    color: var(--primary-dark);
+  }
+  .form-row{ margin-bottom: 16px; }
+  .form-row label{
+    display:block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  input[type="text"], input[type="date"], input[type="number"], textarea{
+    width:100%;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: #FCFDFB;
+    color: #1F2933;
+  }
+  input:focus, textarea:focus{
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(47,93,77,0.12);
+  }
+  textarea{ resize: vertical; min-height: 64px; font-family: var(--font-body); }
+
+  .pet-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    align-items:center;
+    margin-bottom: 8px;
+  }
+  .pet-row-remove{
+    background: transparent;
+    color: var(--ink-faint);
+    padding: 8px;
+    font-size: 16px;
+    line-height:1;
+  }
+  .pet-row-remove:hover{ color: var(--urgent); }
+
+  .form-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .data-footer{
+    margin-top: 34px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+    text-align:center;
+  }
+  .storage-note{
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.6;
+    max-width: 440px;
+    margin: 0 auto 10px;
+  }
+  .data-footer-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    flex-wrap: wrap;
+  }
+
+  .theme-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .theme-toggle .switch-track{
+    position: relative;
+    width: 34px;
+    height: 19px;
+    border-radius: 999px;
+    background: var(--border);
+    transition: background .15s ease;
+  }
+  .theme-toggle .switch-knob{
+    position:absolute;
+    top: 2px; left: 2px;
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    transition: transform .15s ease;
+  }
+  body[data-theme="dark"] .theme-toggle .switch-track{ background: var(--primary); }
+  body[data-theme="dark"] .theme-toggle .switch-knob{ transform: translateX(15px); }
+
+  @media (max-width: 520px){
+    .form-grid{ grid-template-columns: 1fr; }
+    .pet-row{ grid-template-columns: 1fr 1fr auto; }
+    h1{ font-size: 25px; }
+    .header{ align-items: flex-start; }
+  }
+
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="brand-mark">
+        <span class="brand-paw">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="5,9 2,1 9,7.5"/>
+            <polygon points="19,9 22,1 15,7.5"/>
+            <path d="M5,8 C5,15 8,20 12,23 C16,20 19,15 19,8 C16.5,11.5 14,9.2 12,11.5 C10,9.2 7.5,11.5 5,8 Z"/>
+            <circle cx="9.2" cy="12.5" r="1" fill="var(--bg)"/>
+            <circle cx="14.8" cy="12.5" r="1" fill="var(--bg)"/>
+            <ellipse cx="12" cy="18" rx="1.1" ry="0.8" fill="var(--bg)"/>
+          </svg>
+        </span>
+        <h1>Dark Wolf Walkies</h1>
+      </div>
+      <div class="subtitle">Pet-sitting job tracker &amp; calendar export</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary btn-small" id="exportAllBtn">⤓ Export all to Calendar</button>
+      <button class="btn-primary" id="newJobBtn">+ New job</button>
+    </div>
+  </div>
+
+  <div id="loadingState" style="text-align:center; padding: 60px 0; color: var(--ink-faint); font-size:14px;">
+    Loading your jobs…
+  </div>
+
+  <div id="dashboardView" hidden>
+    <div id="emptyState" class="empty-state" hidden>
+      <div class="emoji">🐾</div>
+      <h3>No jobs yet</h3>
+      <p>Add your first job to start tracking dates, clients, and pet details.</p>
+      <button class="btn-primary" id="emptyNewJobBtn">+ Add your first job</button>
+    </div>
+    <div id="jobListContainer"></div>
+  </div>
+
+  <div id="formView" class="form-panel" hidden>
+    <h2 id="formTitle">New job</h2>
+    <form id="jobForm">
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="startDate">Start date</label>
+          <input type="date" id="startDate" required>
+        </div>
+        <div class="form-row">
+          <label for="endDate">End date</label>
+          <input type="date" id="endDate" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="clientName">Client name</label>
+        <input type="text" id="clientName" placeholder="e.g. Marlowe family" required>
+      </div>
+
+      <div class="form-row">
+        <label for="clientAddress">Client address</label>
+        <input type="text" id="clientAddress" placeholder="e.g. 214 Birchwood Ave, Newark, NJ">
+      </div>
+
+      <div class="form-row">
+        <label>Pets</label>
+        <div id="petRows"></div>
+        <button type="button" class="btn-secondary btn-small" id="addPetBtn" style="margin-top:4px;">+ Add pet</button>
+      </div>
+
+      <div class="form-row">
+        <label for="notes">Additional info <span style="font-weight:400; color: var(--ink-faint);">(feeding, walking, meds, etc.)</span></label>
+        <textarea id="notes" placeholder="e.g. Feed 8am &amp; 6pm, 1/2 cup dry food. Walk twice daily. Meds: insulin shot with dinner."></textarea>
+      </div>
+
+      <div class="form-footer">
+        <button type="button" class="btn-secondary" id="cancelFormBtn">Cancel</button>
+        <button type="submit" class="btn-primary" id="saveJobBtn">Save job</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="data-footer">
+    <div class="storage-note">Jobs are saved in this browser only. If you use this on more than one device, use Backup to save a copy and Restore to load it elsewhere.</div>
+    <div class="data-footer-actions">
+      <button class="theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle dark mode">
+        <span id="themeToggleLabel">Light mode</span>
+        <span class="switch-track"><span class="switch-knob"></span></span>
+      </button>
+      <button class="btn-ghost btn-small" id="backupBtn">⤓ Backup data</button>
+      <button class="btn-ghost btn-small" id="restoreBtn">⤒ Restore data</button>
+      <input type="file" id="restoreFileInput" accept="application/json" hidden>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let jobs = [];
+  let editingId = null;
+  let petCounter = 0;
+
+  const dashboardView = document.getElementById('dashboardView');
+  const formView = document.getElementById('formView');
+  const loadingState = document.getElementById('loadingState');
+  const emptyState = document.getElementById('emptyState');
+  const jobListContainer = document.getElementById('jobListContainer');
+  const petRows = document.getElementById('petRows');
+  const formTitle = document.getElementById('formTitle');
+
+  // ---------- Theme (light/dark) ----------
+  const THEME_KEY = 'rounds_theme_v1';
+
+  function applyTheme(theme){
+    document.body.dataset.theme = theme;
+    const label = document.getElementById('themeToggleLabel');
+    if(label) label.textContent = theme === 'dark' ? 'Dark mode' : 'Light mode';
+  }
+
+  function loadTheme(){
+    let theme = 'light';
+    try{
+      const saved = localStorage.getItem(THEME_KEY);
+      if(saved === 'dark' || saved === 'light'){
+        theme = saved;
+      } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+        theme = 'dark';
+      }
+    }catch(e){ /* default to light */ }
+    applyTheme(theme);
+  }
+
+  function toggleTheme(){
+    const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){ /* ignore */ }
+  }
+
+  loadTheme();
+  document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+
+  // ---------- Storage (browser localStorage — no account, no server) ----------
+  const STORAGE_KEY = 'rounds_jobs_v1';
+
+  async function loadJobs(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      jobs = raw ? JSON.parse(raw) : [];
+    }catch(e){
+      jobs = [];
+    }
+    loadingState.hidden = true;
+    dashboardView.hidden = false;
+    renderDashboard();
+  }
+
+  async function persistJobs(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+    }catch(e){
+      alert('Could not save to this browser\'s storage. Your device may be low on space, or storage may be disabled in your browser settings.');
+    }
+  }
+
+  // ---------- Backup / Restore (for moving data between devices) ----------
+  function backupJobs(){
+    if(jobs.length === 0){
+      alert('No jobs to back up yet.');
+      return;
+    }
+    const blob = new Blob([JSON.stringify(jobs, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'dark_wolf_walkies_backup_' + todayStr() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function restoreJobs(file){
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      let incoming;
+      try{
+        incoming = JSON.parse(e.target.result);
+        if(!Array.isArray(incoming)) throw new Error('not an array');
+      }catch(err){
+        alert('That file doesn\'t look like a valid Dark Wolf Walkies backup.');
+        return;
+      }
+      const mode = jobs.length === 0
+        ? 'replace'
+        : (confirm(`You have ${jobs.length} existing job(s) on this device. Click OK to MERGE the backup in (recommended), or Cancel to REPLACE everything with the backup.`) ? 'merge' : 'replace');
+
+      if(mode === 'replace'){
+        jobs = incoming;
+      } else {
+        const existingIds = new Set(jobs.map(j => j.id));
+        incoming.forEach(j => { if(!existingIds.has(j.id)) jobs.push(j); });
+      }
+      await persistJobs();
+      renderDashboard();
+      alert('Backup loaded.');
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------- Date helpers ----------
+  function todayStr(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function daysUntil(dateStr){
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const target = Date.UTC(y, m-1, d);
+    const [ty,tm,td] = todayStr().split('-').map(Number);
+    const now = Date.UTC(ty, tm-1, td);
+    return Math.round((target - now) / 86400000);
+  }
+
+  function formatDateRange(start, end){
+    const opts = { month: 'short', day: 'numeric' };
+    const s = new Date(start + 'T00:00:00');
+    const e = new Date(end + 'T00:00:00');
+    const sStr = s.toLocaleDateString('en-US', opts);
+    const eStr = e.toLocaleDateString('en-US', {...opts, year: (s.getFullYear()!==e.getFullYear()? 'numeric': undefined)});
+    if(start === end) return sStr;
+    return sStr + ' → ' + eStr;
+  }
+
+  function addDaysToDateStr(dateStr, n){
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m-1, d));
+    dt.setUTCDate(dt.getUTCDate() + n);
+    return dt.getUTCFullYear() + String(dt.getUTCMonth()+1).padStart(2,'0') + String(dt.getUTCDate()).padStart(2,'0');
+  }
+
+  function dateStrToICS(dateStr){
+    return dateStr.replace(/-/g, '');
+  }
+
+  // ---------- Rendering ----------
+  function statusFor(job){
+    const start = daysUntil(job.startDate);
+    const end = daysUntil(job.endDate);
+    if(end < 0) return 'past';
+    if(start <= 0 && end >= 0) return 'today';
+    if(start > 0 && start <= 3) return 'soon';
+    return 'upcoming';
+  }
+
+  function statusLabel(status, job){
+    if(status === 'past') return 'Completed';
+    if(status === 'today') return 'In progress';
+    if(status === 'soon'){
+      const d = daysUntil(job.startDate);
+      return d === 1 ? 'Starts tomorrow' : 'Starts in ' + d + 'd';
+    }
+    return 'Upcoming';
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // ---------- Small thematic icons ----------
+  function pawIcon(size){
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="var(--accent)" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="12" cy="15.5" rx="5" ry="4.2"/>
+      <ellipse cx="5.2" cy="9.5" rx="2.1" ry="2.6" transform="rotate(-20 5.2 9.5)"/>
+      <ellipse cx="9.6" cy="5.8" rx="2" ry="2.5" transform="rotate(-8 9.6 5.8)"/>
+      <ellipse cx="14.4" cy="5.8" rx="2" ry="2.5" transform="rotate(8 14.4 5.8)"/>
+      <ellipse cx="18.8" cy="9.5" rx="2.1" ry="2.6" transform="rotate(20 18.8 9.5)"/>
+    </svg>`;
+  }
+
+  function dogIcon(size){
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="var(--primary)" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="6" cy="9.5" rx="2.6" ry="4" transform="rotate(-25 6 9.5)"/>
+      <ellipse cx="18" cy="9.5" rx="2.6" ry="4" transform="rotate(25 18 9.5)"/>
+      <ellipse cx="12" cy="14" rx="6.2" ry="5.6"/>
+      <circle cx="9" cy="13" r="0.9" fill="var(--surface)"/>
+      <circle cx="15" cy="13" r="0.9" fill="var(--surface)"/>
+      <ellipse cx="12" cy="16.8" rx="1.3" ry="0.9" fill="var(--surface)"/>
+    </svg>`;
+  }
+
+  function catIcon(size){
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="var(--primary)" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="5,9 8.2,2.8 9.4,10"/>
+      <polygon points="19,9 15.8,2.8 14.6,10"/>
+      <circle cx="12" cy="13" r="6.2"/>
+      <circle cx="9.4" cy="12" r="0.8" fill="var(--surface)"/>
+      <circle cx="14.6" cy="12" r="0.8" fill="var(--surface)"/>
+      <polygon points="12,13.6 11.3,14.6 12.7,14.6" fill="var(--surface)"/>
+    </svg>`;
+  }
+
+  function speciesIcon(breed, size){
+    const b = (breed || '').toLowerCase();
+    size = size || 15;
+    if(/\b(dog|pup|puppy|retriever|shepherd|terrier|lab|labrador|poodle|bulldog|beagle|corgi|husky|hound|spaniel|pit\s?bull|mutt|collie|dachshund|chihuahua|boxer|mastiff)\b/.test(b)){
+      return dogIcon(size);
+    }
+    if(/\b(cat|kitten|feline|tabby|siamese|persian|maine\s?coon|ragdoll|calico|tuxedo)\b/.test(b)){
+      return catIcon(size);
+    }
+    return pawIcon(size - 2);
+  }
+
+  function renderDashboard(){
+    emptyState.hidden = jobs.length !== 0;
+    jobListContainer.hidden = jobs.length === 0;
+
+    const sorted = [...jobs].sort((a,b) => a.startDate.localeCompare(b.startDate));
+
+    jobListContainer.innerHTML = sorted.map(job => {
+      const status = statusFor(job);
+      const petChips = (job.pets || []).map(p =>
+        `<span class="pet-chip">${speciesIcon(p.breed)}${escapeHtml(p.name)}${p.breed ? ' · ' + escapeHtml(p.breed) : ''}</span>`
+      ).join('');
+
+      return `
+        <div class="job-card ${status}" data-id="${job.id}">
+          <span class="tag-hole"></span>
+          <div class="job-top">
+            <div>
+              <div class="job-client">${escapeHtml(job.clientName)}</div>
+              <div class="job-dates">${formatDateRange(job.startDate, job.endDate)}</div>
+            </div>
+            <span class="job-badge">${statusLabel(status, job)}</span>
+          </div>
+          ${job.clientAddress ? `<div class="job-meta"><strong>Address:</strong> ${escapeHtml(job.clientAddress)}</div>` : ''}
+          ${petChips ? `<div class="pet-chips">${petChips}</div>` : ''}
+          ${job.notes ? `<div class="job-notes">${escapeHtml(job.notes)}</div>` : ''}
+          <div class="job-actions">
+            <button class="btn-secondary btn-small" data-action="ics" data-id="${job.id}">⤓ Add to Calendar</button>
+            <button class="btn-ghost btn-small" data-action="edit" data-id="${job.id}">Edit</button>
+            <button class="btn-danger-ghost btn-small" data-action="delete" data-id="${job.id}">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ---------- Pet rows in form ----------
+  function addPetRow(name, breed){
+    const rowId = 'pet-' + (petCounter++);
+    const row = document.createElement('div');
+    row.className = 'pet-row';
+    row.dataset.rowId = rowId;
+    row.innerHTML = `
+      <input type="text" class="pet-name" placeholder="Pet name" value="${name ? escapeHtml(name) : ''}">
+      <input type="text" class="pet-breed" placeholder="Breed / species" value="${breed ? escapeHtml(breed) : ''}">
+      <button type="button" class="pet-row-remove" title="Remove pet">✕</button>
+    `;
+    row.querySelector('.pet-row-remove').addEventListener('click', () => row.remove());
+    petRows.appendChild(row);
+  }
+
+  function collectPets(){
+    return [...petRows.querySelectorAll('.pet-row')].map(row => ({
+      name: row.querySelector('.pet-name').value.trim(),
+      breed: row.querySelector('.pet-breed').value.trim()
+    })).filter(p => p.name || p.breed);
+  }
+
+  // ---------- Form open/close ----------
+  function openForm(job){
+    editingId = job ? job.id : null;
+    formTitle.textContent = job ? 'Edit job' : 'New job';
+    document.getElementById('startDate').value = job ? job.startDate : '';
+    document.getElementById('endDate').value = job ? job.endDate : '';
+    document.getElementById('clientName').value = job ? job.clientName : '';
+    document.getElementById('clientAddress').value = job ? job.clientAddress : '';
+    document.getElementById('notes').value = job ? job.notes : '';
+    petRows.innerHTML = '';
+    if(job && job.pets && job.pets.length){
+      job.pets.forEach(p => addPetRow(p.name, p.breed));
+    } else {
+      addPetRow('', '');
+    }
+    dashboardView.hidden = true;
+    formView.hidden = false;
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function closeForm(){
+    formView.hidden = true;
+    dashboardView.hidden = false;
+    editingId = null;
+  }
+
+  document.getElementById('newJobBtn').addEventListener('click', () => openForm(null));
+  document.getElementById('emptyNewJobBtn').addEventListener('click', () => openForm(null));
+  document.getElementById('cancelFormBtn').addEventListener('click', closeForm);
+  document.getElementById('addPetBtn').addEventListener('click', () => addPetRow('', ''));
+
+  document.getElementById('jobForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    if(endDate < startDate){
+      alert('End date can\'t be before the start date.');
+      return;
+    }
+    const job = {
+      id: editingId || ('job_' + Date.now() + '_' + Math.random().toString(36).slice(2,8)),
+      startDate,
+      endDate,
+      clientName: document.getElementById('clientName').value.trim(),
+      clientAddress: document.getElementById('clientAddress').value.trim(),
+      pets: collectPets(),
+      notes: document.getElementById('notes').value.trim()
+    };
+    if(editingId){
+      jobs = jobs.map(j => j.id === editingId ? job : j);
+    } else {
+      jobs.push(job);
+    }
+    await persistJobs();
+    closeForm();
+    renderDashboard();
+  });
+
+  // ---------- Card actions ----------
+  jobListContainer.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const id = btn.dataset.id;
+    const job = jobs.find(j => j.id === id);
+    if(!job) return;
+
+    if(btn.dataset.action === 'edit'){
+      openForm(job);
+    } else if(btn.dataset.action === 'delete'){
+      if(confirm(`Delete the job for ${job.clientName}? This can't be undone.`)){
+        jobs = jobs.filter(j => j.id !== id);
+        await persistJobs();
+        renderDashboard();
+      }
+    } else if(btn.dataset.action === 'ics'){
+      downloadICS([job], job.clientName.replace(/[^a-z0-9]/gi, '_') || 'job');
+    }
+  });
+
+  document.getElementById('backupBtn').addEventListener('click', backupJobs);
+
+  document.getElementById('restoreBtn').addEventListener('click', () => {
+    document.getElementById('restoreFileInput').click();
+  });
+
+  document.getElementById('restoreFileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(file) restoreJobs(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('exportAllBtn').addEventListener('click', () => {
+    if(jobs.length === 0){
+      alert('No jobs to export yet.');
+      return;
+    }
+    downloadICS(jobs, 'all_jobs');
+  });
+
+  // ---------- ICS generation ----------
+  function icsEscape(text){
+    return (text || '')
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n');
+  }
+
+  function buildEvent(job){
+    const dtStart = dateStrToICS(job.startDate);
+    const dtEndExclusive = addDaysToDateStr(job.endDate, 1);
+    const petLines = (job.pets || []).map(p => `${p.name}${p.breed ? ' (' + p.breed + ')' : ''}`).join(', ');
+    const summary = job.clientName + (petLines ? ' — ' + petLines : '');
+    let descriptionParts = [];
+    if(petLines) descriptionParts.push('Pets: ' + petLines);
+    if(job.notes) descriptionParts.push('Notes: ' + job.notes);
+    const description = descriptionParts.join('\n');
+    const now = new Date();
+    const dtStamp = now.toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+    const uid = job.id + '@rounds.local';
+
+    return [
+      'BEGIN:VEVENT',
+      'UID:' + uid,
+      'DTSTAMP:' + dtStamp,
+      'DTSTART;VALUE=DATE:' + dtStart,
+      'DTEND;VALUE=DATE:' + dtEndExclusive,
+      'SUMMARY:' + icsEscape(summary),
+      job.clientAddress ? 'LOCATION:' + icsEscape(job.clientAddress) : null,
+      description ? 'DESCRIPTION:' + icsEscape(description) : null,
+      'END:VEVENT'
+    ].filter(Boolean).join('\r\n');
+  }
+
+  function downloadICS(jobList, filenameBase){
+    const events = jobList.map(buildEvent).join('\r\n');
+    const calendar = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Dark Wolf Walkies//Pet Sitting Tracker//EN',
+      'CALSCALE:GREGORIAN',
+      events,
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([calendar], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filenameBase + '.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  loadJobs();
+})();
+</script>
+
+</body>
+</html>
